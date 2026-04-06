@@ -18,23 +18,26 @@ export const Default: Story = {};
 
 export const ItemSelected: Story = {
   play: async ({ canvas, userEvent }) => {
-    const item = canvas.getByTestId(`item-${items[0].name}`);
+    let item = canvas.getByTestId(`item-${items[0].name}`);
     await expect(item).not.toHaveClass("selected");
     await userEvent.click(item);
+    item = canvas.getByTestId(`item-${items[0].name}`);
     await expect(item).toHaveClass("selected");
   },
 };
 
 export const MultipleItemsSelcted: Story = {
   play: async ({ canvas, userEvent }) => {
-    const item = canvas.getByTestId(`item-${items[0].name}`);
+    let item = canvas.getByTestId(`item-${items[0].name}`);
     await expect(item).not.toHaveClass("selected");
-    const item2 = canvas.getByTestId(`item-${items[1].name}`);
+    let item2 = canvas.getByTestId(`item-${items[1].name}`);
     await expect(item2).not.toHaveClass("selected");
 
     await userEvent.click(item);
     await userEvent.click(item2);
+    item = canvas.getByTestId(`item-${items[0].name}`);
     await expect(item).toHaveClass("selected");
+    item2 = canvas.getByTestId(`item-${items[1].name}`);
     await expect(item2).toHaveClass("selected");
   },
 };
