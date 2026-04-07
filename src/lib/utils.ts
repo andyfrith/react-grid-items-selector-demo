@@ -30,13 +30,18 @@ const fruits = [
   "pineapple",
 ];
 
-export const items = sizes.reduce(
+export type Item = {
+  color: string;
+  name: string;
+};
+
+export const items = sizes.reduce<Item[]>(
   (items, size) => [
     ...items,
-    ...fruits.reduce(
+    ...fruits.reduce<Item[]>(
       (acc, fruit) => [
         ...acc,
-        ...colors.reduce(
+        ...colors.reduce<Item[]>(
           (acc, color) => [
             ...acc,
             {

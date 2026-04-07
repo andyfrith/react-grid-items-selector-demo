@@ -1,11 +1,8 @@
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useLayoutEffect, useRef, useState } from "react";
 import "./list.css";
 import clsx from "clsx";
-
-export type Item = {
-  color: string;
-  name: string;
-};
+import SelectedItems from "./SelectedItems";
+import type { Item } from "../lib/utils";
 
 const Item = memo(
   ({
@@ -17,10 +14,20 @@ const Item = memo(
     onItemSelect: (item: Item) => void;
     selected: boolean;
   }) => {
+    const liRef = useRef<HTMLLIElement>(null);
+
+    useLayoutEffect(() => {
+      const el = liRef.current;
+      if (!el) return;
+      el.classList.remove("animate-on-render");
+      void el.offsetWidth;
+      el.classList.add("animate-on-render");
+    });
+
     return (
       <li
+        ref={liRef}
         data-testid={`item-${item.name}`}
-        key={`item.name ${Math.random() * 1000}`}
         className={clsx(
           `animate-on-render`,
           `List__item List__item--${item.color}`,
@@ -35,7 +42,7 @@ const Item = memo(
 );
 
 export default function List({ items }: { items: Array<Item> }) {
-  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItems, setSelectedItems] = useState<Array<Item>>([]);
 
   const onItemSelect = useCallback((item: Item) => {
     setSelectedItems((prev) => {
@@ -51,10 +58,7 @@ export default function List({ items }: { items: Array<Item> }) {
 
   return (
     <>
-      <h3>Selected Items</h3>
-      <span data-testid="selected-names">
-        {selectedItems.map((item) => item.name)}
-      </span>
+      <SelectedItems selectedItems={selectedItems} />
       <ul className="List" data-testid="item-list">
         {items.map((item) => (
           <Item
